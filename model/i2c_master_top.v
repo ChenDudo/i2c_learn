@@ -177,7 +177,7 @@ module i2c_master_top(
 	wire rd   = cr[5];
 	wire wr   = cr[4];
 	wire ack  = cr[3];
-	wire iack = cr[0];
+	wire iack = cr[0];	//Interrupt acknowledge. When set, clears a pending interrupt.
 
 	// decode control register
 	assign core_en = ctr[7];

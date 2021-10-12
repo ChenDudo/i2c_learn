@@ -71,7 +71,7 @@ module i2c_master_byte_ctrl (
 	wire      core_ack, core_rxd;
 
 	// signals for shift register
-	reg [7:0] sr; 			//8bit shift register
+	reg [7:0] sr; 			// 8bit shift register
 	reg       shift, ld;
 
 	// signals for state machine
@@ -178,6 +178,7 @@ module i2c_master_byte_ctrl (
 					end
 					ld <= #1 1'b1;
 				end
+
 			ST_START:
 				if (core_ack) begin
 					if (read) begin
@@ -194,14 +195,14 @@ module i2c_master_byte_ctrl (
 			ST_WRITE:
 				if (core_ack)
 					if (cnt_done) begin
-						c_state	<= #1 ST_ACK;
+						c_state	 <= #1 ST_ACK;
 						core_cmd <= #1 `I2C_CMD_READ;
 					end
-				else begin
-					c_state	<= #1 ST_WRITE;		 // stay in same state
-					core_cmd <= #1 `I2C_CMD_WRITE; // write next bit
-					shift	<= #1 1'b1;
-				end
+					else begin
+						c_state	<= #1 ST_WRITE;		   // stay in same state
+						core_cmd <= #1 `I2C_CMD_WRITE; // write next bit
+						shift	 <= #1 1'b1;
+					end
 
 			ST_READ:
 				if (core_ack) begin
@@ -210,7 +211,7 @@ module i2c_master_byte_ctrl (
 						core_cmd <= #1 `I2C_CMD_WRITE;
 					end
 					else begin
-						c_state	 <= #1 ST_READ;		 // stay in same state
+						c_state	 <= #1 ST_READ;		  // stay in same state
 						core_cmd <= #1 `I2C_CMD_READ; // read next bit
 					end
 					shift	 <= #1 1'b1;
@@ -219,18 +220,18 @@ module i2c_master_byte_ctrl (
 
 			ST_ACK:
 				if (core_ack) begin
-					 if (stop) begin
-						c_state	<= #1 ST_STOP;
+					if (stop) begin
+						c_state	 <= #1 ST_STOP;
 						core_cmd <= #1 `I2C_CMD_STOP;
 					 end
 					 else begin
-						c_state	<= #1 ST_IDLE;
+						c_state	 <= #1 ST_IDLE;
 						core_cmd <= #1 `I2C_CMD_NOP;
 						// generate command acknowledge signal
-						cmd_ack	<= #1 1'b1;
+						cmd_ack	 <= #1 1'b1;
 					end
 					// assign ack_out output to bit_controller_rxd (contains last received bit)
-					ack_out <= #1 core_rxd;
+					ack_out	 <= #1 core_rxd;
 					core_txd <= #1 1'b1;
 				end
 				else
@@ -245,4 +246,6 @@ module i2c_master_byte_ctrl (
 				end
 			endcase
 		end
+
+
 endmodule
